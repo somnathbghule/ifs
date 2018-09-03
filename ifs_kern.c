@@ -4,12 +4,24 @@
 
 //extern int register_filesystem(struct file_system_type *);
 //extern int unregister_filesystem(struct file_system_type *);
+//struct dentry *(*mount) (struct file_system_type *, int, const char *, void *);
+//struct dentry *mount_nodev(struct file_system_type *fs_type, int flags, void *data, int (*fill_super)(struct super_block *, void *, int))
 
+/*
+
+# create and mount a 100 megabyte (100M) temporary memory filesystem
+	sudo mount -osize=100m ifs /mnt -t ifs
+*/
+struct dentry *ifs_mount(struct file_system_type *fstype, int mount_flags, const char *dev_name, void *data){
+	printk("%s called\n", __func__);
+	return mount_nodev(fstype, mount_flags, data, NULL);
+}
 struct file_system_type ifs_type={
 	.name="ifs",
+	.fs_flags=FS_BINARY_MOUNTDATA,
 	.owner=THIS_MODULE,
+	.mount=ifs_mount,
 };
-
 
 static int ifs_init(void){
 	int ret=0;
