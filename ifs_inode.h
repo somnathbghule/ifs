@@ -1,6 +1,8 @@
 #ifndef INODE_H
 #define INODE_H
 #include <linux/fs.h>
+#include <linux/highmem.h>
+#include <linux/pagemap.h>
 
 
 typedef struct ifs_inode{
@@ -8,5 +10,6 @@ typedef struct ifs_inode{
 } ifs_ionde_t;
 
 struct inode *ifs_new_inode(struct super_block *sb);
+int ifs_readpage(struct file *fp, struct page *pg);
 
 #endif

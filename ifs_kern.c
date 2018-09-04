@@ -2,6 +2,7 @@
 #include <linux/kernel.h>
 #include <linux/fs.h>
 #include <ifs_inode.h>
+#include <linux/slab.h>
 
 
 /*
@@ -10,6 +11,10 @@
 	sudo mount -osize=100m ifs /mnt -t ifs
 */
 
+
+struct super_operations ifs_super_operations={
+	.drop_inode=generic_delete_inode,
+};
 
 //int (*fill_super)(struct super_block *, void *, int)
 
@@ -21,6 +26,7 @@ int ifs_fill_super(struct super_block *sb, void *data, int silent){
 		status=-1;
 		goto out;
 	}
+	sb->s_op=&ifs_super_operations;
 	sb->s_root = d_make_root(root_inode);
 	if (!sb->s_root){
 		status=-ENOMEM;
@@ -44,11 +50,17 @@ struct dentry *ifs_mount(struct file_system_type *fstype, int mount_flags, const
 	printk("EOF ifs_mount\n");
 	return dt;
 }
+void ifs_kill_sb(struct super_block *sb){
+	printk("%s called.\n",__func__);
+	kfree(sb->s_fs_info);
+	kill_litter_super(sb);
+}
 struct file_system_type ifs_type={
 	.name="ifs",
-	.fs_flags=FS_BINARY_MOUNTDATA,
+	.fs_flags=FS_USERNS_MOUNT,
 	.owner=THIS_MODULE,
 	.mount=ifs_mount,
+	.kill_sb=ifs_kill_sb,
 };
 
 //extern int register_filesystem(struct file_system_type *);
