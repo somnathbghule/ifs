@@ -26,6 +26,7 @@ int ifs_fill_super(struct super_block *sb, void *data, int silent){
 		status=-ENOMEM;
 		goto out;		
 	}
+	printk("EOF ifs_fill_super\n");
 out:
 	return status;
 }
@@ -34,8 +35,14 @@ out:
 //struct dentry *(*mount) (struct file_system_type *, int, const char *, void *);
 //struct dentry *mount_nodev(struct file_system_type *fs_type, int flags, void *data, int (*fill_super)(struct super_block *, void *, int))
 struct dentry *ifs_mount(struct file_system_type *fstype, int mount_flags, const char *dev_name, void *data){
+	struct dentry *dt=NULL;
 	printk("%s called\n", __func__);
-	return mount_nodev(fstype, mount_flags, data, ifs_fill_super);
+	dt=mount_nodev(fstype, mount_flags, data, ifs_fill_super);
+	if(!dt){
+		printk("mount dentry is NULL\n");
+	}
+	printk("EOF ifs_mount\n");
+	return dt;
 }
 struct file_system_type ifs_type={
 	.name="ifs",
