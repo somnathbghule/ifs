@@ -21,17 +21,20 @@ struct super_operations ifs_super_operations={
 int ifs_fill_super(struct super_block *sb, void *data, int silent){
 	int status=0;
 	struct inode *root_inode=NULL;
+	sb->s_op		= &ifs_super_operations;
+        sb->s_magic             = 0x123456789;
+	
 	root_inode=ifs_new_inode(sb);
 	if(!root_inode){
 		status=-1;
 		goto out;
 	}
-	sb->s_op=&ifs_super_operations;
 	sb->s_root = d_make_root(root_inode);
 	if (!sb->s_root){
 		status=-ENOMEM;
 		goto out;		
 	}
+	printk("data: %s\n",(char *)data);
 	printk("EOF ifs_fill_super\n");
 out:
 	return status;
@@ -44,7 +47,8 @@ struct dentry *ifs_mount(struct file_system_type *fstype, int mount_flags, const
 	struct dentry *dt=NULL;
 	printk("%s called\n", __func__);
 	dt=mount_nodev(fstype, mount_flags, data, ifs_fill_super);
-	if(!dt){
+	if(IS_ERR(dt)){
+		printk("dentry err: %ld\n",PTR_ERR(dt));
 		printk("mount dentry is NULL\n");
 	}
 	printk("EOF ifs_mount\n");

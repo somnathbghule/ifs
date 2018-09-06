@@ -1,0 +1,1 @@
+sudo mount -osize=100m ifs /mnt -t ifs

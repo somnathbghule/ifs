@@ -1,0 +1,28 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+EXTRA_CFLAGS	Makefile	/^EXTRA_CFLAGS=-I$(PWD)$/;"	m
+INODE_H	ifs_inode.h	2;"	d
+MODNAME	Makefile	/^MODNAME=$(shell basename $(PWD))$/;"	m
+OBJ_FILES	Makefile	/^OBJ_FILES:=$(patsubst %.c, %.o, $(SOURCE_FILES))$/;"	m
+SOURCE_FILES	Makefile	/^SOURCE_FILES:=$(shell find $(PWD) -name '*.c' -exec basename {} \\; | grep -v '\\.mod')$/;"	m
+__this_module	ifs.mod.c	/^__visible struct module __this_module$/;"	v	typeref:struct:module
+__used	ifs.mod.c	/^__used$/;"	v	file:
+__used	ifs.mod.c	/^__used$/;"	v	typeref:struct:____versions	file:
+ifs_aops	ifs_inode.c	/^static const struct address_space_operations ifs_aops = {$/;"	v	typeref:struct:address_space_operations	file:
+ifs_exit	ifs_kern.c	/^module_exit(ifs_exit);$/;"	v
+ifs_exit	ifs_kern.c	/^static void ifs_exit(void){$/;"	f	file:
+ifs_fill_super	ifs_kern.c	/^int ifs_fill_super(struct super_block *sb, void *data, int silent){$/;"	f
+ifs_init	ifs_kern.c	/^module_init(ifs_init);$/;"	v
+ifs_init	ifs_kern.c	/^static int ifs_init(void){$/;"	f	file:
+ifs_inode	ifs_inode.h	/^typedef struct ifs_inode{$/;"	s
+ifs_ionde_t	ifs_inode.h	/^} ifs_ionde_t;$/;"	t	typeref:struct:ifs_inode
+ifs_kill_sb	ifs_kern.c	/^void ifs_kill_sb(struct super_block *sb){$/;"	f
+ifs_mount	ifs_kern.c	/^struct dentry *ifs_mount(struct file_system_type *fstype, int mount_flags, const char *dev_name, void *data){$/;"	f
+ifs_new_inode	ifs_inode.c	/^struct inode *ifs_new_inode(struct super_block *sb){$/;"	f
+ifs_readpage	ifs_inode.c	/^int ifs_readpage(struct file *fp, struct page *page){$/;"	f
+ifs_super_operations	ifs_kern.c	/^struct super_operations ifs_super_operations={$/;"	v	typeref:struct:super_operations
+ifs_type	ifs_kern.c	/^struct file_system_type ifs_type={$/;"	v	typeref:struct:file_system_type

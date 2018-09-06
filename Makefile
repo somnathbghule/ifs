@@ -13,4 +13,7 @@ load:
 	sudo insmod *.ko
 unload:
 	sudo rmmod ${MODNAME}
-
+mnt:
+	sudo mount -osize=100m ifs /mnt -t ifs
+umt:
+	sudo umount /mnt
