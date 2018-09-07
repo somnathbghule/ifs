@@ -4,7 +4,7 @@ SOURCE_FILES:=$(shell find $(PWD) -name '*.c' -exec basename {} \; | grep -v '\.
 OBJ_FILES:=$(patsubst %.c, %.o, $(SOURCE_FILES))
 obj-m += ${MODNAME}.o
 ${MODNAME}-objs := ${OBJ_FILES}
-EXTRA_CFLAGS=-I$(PWD)
+EXTRA_CFLAGS=-I$(PWD) -DDEBUG
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 clean:
@@ -14,6 +14,6 @@ load:
 unload:
 	sudo rmmod ${MODNAME}
 mnt:
-	sudo mount -osize=100m ifs /mnt -t ifs
+	sudo mount -osize=100m ifs /home/msys/vbox_shared -t ifs
 umt:
-	sudo umount /mnt
+	sudo umount /home/msys/vbox_shared

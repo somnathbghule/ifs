@@ -3,7 +3,8 @@
 #include <linux/fs.h>
 #include <ifs_inode.h>
 #include <linux/slab.h>
-
+#include <ifs.h>
+#include <linux/statfs.h>
 
 /*
 
@@ -11,8 +12,20 @@
 	sudo mount -osize=100m ifs /mnt -t ifs
 */
 
+int ifs_statfs(struct dentry *dentry, struct kstatfs *buf){
+	DPRINTK("%s called\n",__func__);
+	buf->f_bsize=PAGE_SIZE;
+	return 0;
+}
+//int (*show_stats)(struct seq_file *, struct dentry *);
 
+int ifs_show_stats(struct seq_file *seqf, struct dentry *dentry){
+	DPRINTK("%s called\n",__func__);
+	return 0;
+}
 struct super_operations ifs_super_operations={
+	.statfs=ifs_statfs,
+	.show_stats=ifs_show_stats,
 	.drop_inode=generic_delete_inode,
 };
 
@@ -21,10 +34,11 @@ struct super_operations ifs_super_operations={
 int ifs_fill_super(struct super_block *sb, void *data, int silent){
 	int status=0;
 	struct inode *root_inode=NULL;
+	sb->s_blocksize		= PAGE_SIZE;
 	sb->s_op		= &ifs_super_operations;
-        sb->s_magic             = 0x123456789;
+        sb->s_magic             = IFS_MAGIC;
 	
-	root_inode=ifs_new_inode(sb);
+	root_inode=ifs_new_inode(sb, NULL,S_IFDIR|0755);
 	if(!root_inode){
 		status=-1;
 		goto out;
@@ -34,8 +48,8 @@ int ifs_fill_super(struct super_block *sb, void *data, int silent){
 		status=-ENOMEM;
 		goto out;		
 	}
-	printk("data: %s\n",(char *)data);
-	printk("EOF ifs_fill_super\n");
+	//DPRINTK("data: %s\n",(char *)data);
+	DPRINTK("EOF ifs_fill_super\n");
 out:
 	return status;
 }
@@ -45,17 +59,17 @@ out:
 //struct dentry *mount_nodev(struct file_system_type *fs_type, int flags, void *data, int (*fill_super)(struct super_block *, void *, int))
 struct dentry *ifs_mount(struct file_system_type *fstype, int mount_flags, const char *dev_name, void *data){
 	struct dentry *dt=NULL;
-	printk("%s called\n", __func__);
+	DPRINTK("%s called\n", __func__);
 	dt=mount_nodev(fstype, mount_flags, data, ifs_fill_super);
 	if(IS_ERR(dt)){
-		printk("dentry err: %ld\n",PTR_ERR(dt));
-		printk("mount dentry is NULL\n");
+		DPRINTK("dentry err: %ld\n",PTR_ERR(dt));
+		DPRINTK("mount dentry is NULL\n");
 	}
-	printk("EOF ifs_mount\n");
+	DPRINTK("EOF ifs_mount\n");
 	return dt;
 }
 void ifs_kill_sb(struct super_block *sb){
-	printk("%s called.\n",__func__);
+	DPRINTK("%s called.\n",__func__);
 	kfree(sb->s_fs_info);
 	kill_litter_super(sb);
 }
@@ -70,20 +84,20 @@ struct file_system_type ifs_type={
 //extern int register_filesystem(struct file_system_type *);
 static int ifs_init(void){
 	int ret=0;
-	printk(KERN_INFO"%s called\n",__func__);
+	DPRINTK("%s called\n",__func__);
 	ret=register_filesystem(&ifs_type);
 	if(ret){
-		printk("ifs registration failed\n");
+		DPRINTK("ifs registration failed\n");
 	}
 	return 0;
 }
 //extern int unregister_filesystem(struct file_system_type *);
 static void ifs_exit(void){
 	int ret=0;
-	printk(KERN_INFO"%s called\n",__func__);
+	DPRINTK("%s called\n",__func__);
 	ret=unregister_filesystem(&ifs_type);
 	if(ret){
-		printk("ifs unregister failed\n");
+		DPRINTK("ifs unregister failed\n");
 	}
 }
 MODULE_AUTHOR("Somnath");
