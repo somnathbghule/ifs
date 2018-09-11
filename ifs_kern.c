@@ -35,8 +35,11 @@ int ifs_fill_super(struct super_block *sb, void *data, int silent){
 	int status=0;
 	struct inode *root_inode=NULL;
 	sb->s_blocksize		= PAGE_SIZE;
+	sb->s_blocksize_bits    = PAGE_SHIFT;
+	sb->s_maxbytes          = MAX_LFS_FILESIZE;
 	sb->s_op		= &ifs_super_operations;
         sb->s_magic             = IFS_MAGIC;
+	sb->s_time_gran         = 1;
 	
 	root_inode=ifs_new_inode(sb, NULL,S_IFDIR|0755);
 	if(!root_inode){
