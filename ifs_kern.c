@@ -14,7 +14,7 @@
 
 int ifs_statfs(struct dentry *dentry, struct kstatfs *buf){
 	DPRINTK("%s called\n",__func__);
-	buf->f_bsize=PAGE_SIZE;
+	buf->f_bsize=PAGE_SIZE; // RP: what if other fields are not filled, they should be zero.
 	return 0;
 }
 //int (*show_stats)(struct seq_file *, struct dentry *);
@@ -26,7 +26,7 @@ int ifs_show_stats(struct seq_file *seqf, struct dentry *dentry){
 struct super_operations ifs_super_operations={
 	.statfs=ifs_statfs,
 	.show_stats=ifs_show_stats,
-	.drop_inode=generic_delete_inode,
+	.drop_inode=generic_delete_inode, // RP: alloc_inode or new_inode sops would be there, look at that
 };
 
 //int (*fill_super)(struct super_block *, void *, int)
@@ -36,19 +36,19 @@ int ifs_fill_super(struct super_block *sb, void *data, int silent){
 	struct inode *root_inode=NULL;
 	sb->s_blocksize		= PAGE_SIZE;
 	sb->s_blocksize_bits    = PAGE_SHIFT;
-	sb->s_maxbytes          = MAX_LFS_FILESIZE;
+	sb->s_maxbytes          = MAX_LFS_FILESIZE; // RP: wrong way to use., it should be your own design decision
 	sb->s_op		= &ifs_super_operations;
         sb->s_magic             = IFS_MAGIC;
-	sb->s_time_gran         = 1;
+	sb->s_time_gran         = 1; // should know what does it mean, if you  use code
 	
 	root_inode=ifs_new_inode(sb, NULL,S_IFDIR|0755);
 	if(!root_inode){
-		status=-1;
+		status=-1; // RP: cannot return random error values
 		goto out;
 	}
 	sb->s_root = d_make_root(root_inode);
 	if (!sb->s_root){
-		status=-ENOMEM;
+		status=-ENOMEM; // RP: does d_make_root always fail only with ENOMEM?
 		goto out;		
 	}
 	//DPRINTK("data: %s\n",(char *)data);
@@ -69,16 +69,15 @@ struct dentry *ifs_mount(struct file_system_type *fstype, int mount_flags, const
 		DPRINTK("mount dentry is NULL\n");
 	}
 	DPRINTK("EOF ifs_mount\n");
-	return dt;
+	return dt; // RP: is it the right error to return
 }
 void ifs_kill_sb(struct super_block *sb){
 	DPRINTK("%s called.\n",__func__);
-	kfree(sb->s_fs_info);
-	kill_litter_super(sb);
+	kill_litter_super(sb); // RP: whats does this API does and why not use other generic kill_super APIs?
 }
 struct file_system_type ifs_type={
 	.name="ifs",
-	.fs_flags=FS_USERNS_MOUNT,
+	.fs_flags=FS_USERNS_MOUNT, // RP: whats the use of this flag?
 	.owner=THIS_MODULE,
 	.mount=ifs_mount,
 	.kill_sb=ifs_kill_sb,
