@@ -55,12 +55,13 @@ struct inode *ifs_new_inode(struct super_block *sb, struct inode *dir,int mode){
 	if(IS_ERR(ifs_ino)){
 		DPRINTK("dentry err: %ld\n",PTR_ERR(ifs_ino));
 		DPRINTK("mount dentry is NULL\n");
+		return NULL;
 	}
-	// RP: if no inode return from above, no need conditional code below
+	// RP: if no inode return from above, no need conditional code below ===> Resolved
 	if(ifs_ino){
 		ifs_ino->i_ino=get_next_ino();
 		ifs_ino->i_atime=ifs_ino->i_mtime = ifs_ino->i_ctime = current_time(ifs_ino);
-		inode_init_owner(ifs_ino, dir, mode); // why needed?
+		inode_init_owner(ifs_ino, dir, mode); // RP: why needed? [Init uid,gid,mode for new inode according to posix standards ]
 		switch(S_IFMT & mode){
 			case S_IFDIR:
 				ifs_ino->i_op=&ifs_inode_operations;
