@@ -37,7 +37,7 @@ int ifs_show_stats(struct seq_file *seqf, struct dentry *dentry){
 }
 struct super_operations ifs_super_operations={
 	.statfs=ifs_statfs,
-	.show_stats=ifs_show_stats,
+	//.show_stats=ifs_show_stats,
 };
 
 //int (*fill_super)(struct super_block *, void *, int)
@@ -58,7 +58,6 @@ int ifs_fill_super(struct super_block *sb, void *data, int silent){
 		status=-ENOMEM; // RP: does d_make_root always fail only with ENOMEM? [ It returns %NULL if there is insufficient memory available. ]
 		goto out;		
 	}
-	//DPRINTK("data: %s\n",(char *)data);
 	DPRINTK("EOF ifs_fill_super\n");
 out:
 	return status;

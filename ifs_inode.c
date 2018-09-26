@@ -29,13 +29,12 @@ int ifs_getattr(const struct path *path, struct kstat *kstat, u32 offset, unsign
 	DPRINTK("%s called\n",__func__);	
 	generic_fillattr(inode, kstat);
 	kstat->blocks = inode->i_mapping->nrpages << (PAGE_SHIFT - 9);
-	DPRINTK("(S_IFMT & mode)== S_IFDIR :%d", ((S_IFMT & inode->i_mode)== S_IFDIR));
 	return 0;
 
 }
 struct dentry * ifs_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags){
 	DPRINTK("%s called\n",__func__);	
-	return 0;
+	return NULL;
 }
 struct inode_operations ifs_inode_operations={
 	.setattr=ifs_setattr,
@@ -43,10 +42,15 @@ struct inode_operations ifs_inode_operations={
 	.lookup=ifs_lookup,
 };
 
-
+//int (*iterate) (struct file *, struct dir_context *);
+int ifs_iterate (struct file *filp, struct dir_context *ctx){
+	DPRINTK("%s called\n",__func__);
+	return 0;
+}
 
 struct file_operations ifs_inode_dir_operations={
 	.read=generic_read_dir,
+	.iterate=ifs_iterate,
 };
 
 struct inode *ifs_new_inode(struct super_block *sb, struct inode *dir,int mode){
