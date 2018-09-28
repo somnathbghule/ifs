@@ -10,6 +10,8 @@ etc etc
 
 Features:
 open()
+create()
+unlink()
 close()
 read()
 write()
@@ -17,8 +19,23 @@ write()
 Design:
 1. fs create [ not required as inmemory filesystem ]
 2. fs mount  [ use of mount_nodev(),fill_super() ]
-3. fs umount
+3. fs umount [ kill_sb(), kill_litter_super() ]
+4. stat      [ getattr() and statfs() ]
+5. df 	     [ same like stat ] 
+6. ls        [ getattr() ] 
+7. create    [ create(), new_inode() and setattr() ]
+8. unlink    [ unlink()]
 
 Implementation:
 register_filesystem()
 unregister_filesystem()
+mount();
+umount();
+statistics()
+list()
+create()
+unlink()
+
+============================================
+Current Complete Status:
+mount, umount, stats, list, create, unlink

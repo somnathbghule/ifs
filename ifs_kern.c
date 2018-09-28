@@ -37,7 +37,8 @@ int ifs_show_stats(struct seq_file *seqf, struct dentry *dentry){
 }
 struct super_operations ifs_super_operations={
 	.statfs=ifs_statfs,
-	//.show_stats=ifs_show_stats,
+	.show_stats=ifs_show_stats,
+	.drop_inode     = generic_delete_inode,
 };
 
 //int (*fill_super)(struct super_block *, void *, int)
@@ -46,11 +47,11 @@ int ifs_fill_super(struct super_block *sb, void *data, int silent){
 	int status=0;
 	struct inode *root_inode=NULL;
 	sb->s_blocksize		= PAGE_SIZE;
-	//sb->s_blocksize_bits    = PAGE_SHIFT;
+	sb->s_blocksize_bits    = PAGE_SHIFT;
 	sb->s_maxbytes          = MAX_IFS_FILESIZE; // RP: wrong way to use., it should be your own design decision ===>> designed
 	sb->s_op		= &ifs_super_operations;
         sb->s_magic             = IFS_MAGIC;
-	//sb->s_time_gran         = 1; // should know what does it mean, if you  use code ===>> Granularity of c/m/atime in ns
+	sb->s_time_gran         = 1; // should know what does it mean, if you  use code ===>> Granularity of c/m/atime in ns
 	
 	root_inode=ifs_new_inode(sb, NULL,S_IFDIR|0755);
 	sb->s_root = d_make_root(root_inode);

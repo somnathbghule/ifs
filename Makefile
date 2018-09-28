@@ -11,9 +11,13 @@ clean:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
 load:
 	sudo insmod *.ko
-unload:umt
-	sudo rmmod ${MODNAME}
-mnt:load
-	sudo mount -osize=100m ifs /mnt -t ifs
-umt:
+	sudo mount ifs /mnt -t ifs
+unload:
 	sudo umount /mnt
+	sudo rmmod ${MODNAME}
+create:
+	sudo touch /mnt/abc
+rm: 
+	sudo rm /mnt/abc
+ls:
+	sudo ls /mnt/abc -l
