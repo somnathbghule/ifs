@@ -25,6 +25,8 @@ Design:
 6. ls        [ getattr() ] 
 7. create    [ create(), new_inode() and setattr() ]
 8. unlink    [ unlink()]
+9. read	     [address_operations]
+10. write    [address_oparations]
 
 Implementation:
 register_filesystem()
@@ -35,7 +37,9 @@ statistics()
 list()
 create()
 unlink()
+read()
+write()
 
 ============================================
 Current Complete Status:
-mount, umount, stats, list, create, unlink
+mount, umount, stats, list, create, unlink, read, write done.

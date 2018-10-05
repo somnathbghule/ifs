@@ -21,3 +21,8 @@ rm:
 	sudo rm /mnt/abc
 ls:
 	sudo ls /mnt/abc -l
+write:
+	echo abc > /mnt/abc
+cat:
+	cat /mnt/abc
+op:load create write cat

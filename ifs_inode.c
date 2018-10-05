@@ -13,9 +13,28 @@ int ifs_readpage(struct file *fp, struct page *page){
         return 0;
 }
 
+int ifs_write_begin(struct file *filep, struct address_space *mapping, loff_t pos, unsigned len, unsigned flags, struct page **pagep, void **fsdata){
+
+	DPRINTK("%s called\n",__func__);
+	*pagep=grab_cache_page_write_begin(mapping, pos>>PAGE_SHIFT, flags);
+	if (!*pagep)
+                return -ENOMEM;
+        return 0;
+} 
+int ifs_write_end(struct file *file, struct address_space *mapping, loff_t pos, unsigned len, unsigned copied, struct page *page, void *fsdata){
+
+	DPRINTK("%s called\n",__func__);
+	SetPageUptodate(page);
+	i_size_write(page->mapping->host, pos+copied);
+        unlock_page(page);
+        put_page(page);
+        return copied;
+}
+ 
 static const struct address_space_operations ifs_aops = {
-	.readpage=ifs_readpage,
-	.writepage=ifs_writepage,
+	.readpage	= ifs_readpage,
+        .write_begin    = ifs_write_begin,
+        .write_end      = ifs_write_end,
 };
 
 
@@ -110,10 +129,10 @@ ssize_t ifs_write(struct file *file, const char __user *buf, size_t size, loff_t
 
 struct file_operations ifs_file_operations={
 	.open  = generic_file_open,
-	.write = ifs_write,
-	 //.read_iter              = generic_file_read_iter,
-        //.write_iter             = generic_file_write_iter,
-        //.splice_read            = generic_file_splice_read,
+	//.write = ifs_write,
+	 .read_iter              = generic_file_read_iter,
+        .write_iter             = generic_file_write_iter,
+        .splice_read            = generic_file_splice_read,
         .llseek                 = generic_file_llseek,
 
 };
