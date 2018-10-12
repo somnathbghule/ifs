@@ -8,6 +8,8 @@
 #else
 #define DPRINTK(...)
 #endif
-#endif
 
 #define IFS_MAGIC 0x123456789
+#define MAX_IFS_FILESIZE 512
+
+#endif
